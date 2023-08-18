@@ -61,6 +61,7 @@ public class StageManager : MonoBehaviour
         int prevRoomCnt = 0;
         int tempRoomCnt = 0;
         int prevRank = 0;
+        int randomRoom = 0;
 
         // 시작지점 초기화
         SRoomPos roomPos = new SRoomPos(arrayLength >> 1, arrayLength >> 1, 0, true);
@@ -79,8 +80,7 @@ public class StageManager : MonoBehaviour
             {
                 if (MyMathf.CheckRange(listRoom[i].x, 1, arrayLength - 2) &&
                     MyMathf.CheckRange(listRoom[i].y, 1, arrayLength - 2))
-                    tempRoomCnt += SetRoomPos(listRoom[i].x, listRoom[i].y, prevRank + 1);
-
+                    tempRoomCnt += SetRoomPos(listRoom[i].x, listRoom[i].y, prevRank + 1, ref randomRoom);
             }
 
             prevRoomCnt = ttlRoomCnt;
@@ -98,11 +98,18 @@ public class StageManager : MonoBehaviour
         // 만약 누군가가 4르 ㄹ입력한다면 배열은 4의 2배 + 3 크기로 만들자.( 좌 우 끝에 비우기 위함)
     }
 
-    private int SetRoomPos(int _x, int _y, int _rank)
+    private int SetRoomPos(int _x, int _y, int _rank, ref int _randomRoom)
     {
         List<SRoomPos> listRoomPos = new List<SRoomPos>();
         SRoomPos roomPos;
-        int roomCnt = Random.Range(1, 4);
+        //int maxRange = Mathf.Clamp(5 - (_rank>>1), 1, 5);
+        int roomCnt = Random.Range(1, 3);
+        if (_randomRoom == 5)
+        {
+            roomCnt = 3;
+            _randomRoom = -1;
+        }
+        
 
         if (arrayRoom[_x, _y + 1].Equals(0))
         {
@@ -146,12 +153,14 @@ public class StageManager : MonoBehaviour
 
             listRoom.AddRange(listRoomPos.ToArray());
         }
+        ++_randomRoom;
+
         return listRoomPos.Count;
     }
 
     private void Awake()
     {
-        arrayLength = minRoomCnt;
+        arrayLength = (int)(minRoomCnt * 2);
         arrayRoom = new int[arrayLength, arrayLength];
         System.Array.Clear(arrayRoom, 0, arrayRoom.Length);
         listRoom = new List<SRoomPos>();
