@@ -6,12 +6,17 @@ public class GameManager : MonoBehaviour
 {
     private void Start()
     {
-        canvasMng.Init(GenMap);
+        canvasMng.Init(GenMap, Resetmap);
     }
 
     private void GenMap()
     {
         stageMng.GenerateMap();
+    }
+
+    private void Resetmap()
+    {
+        stageMng.ResetMap();
     }
 
     [SerializeField]

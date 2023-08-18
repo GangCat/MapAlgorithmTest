@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
+using TMPro;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
@@ -9,80 +10,169 @@ public class StageManager : MonoBehaviour
     {
         public int x;
         public int y;
+        public int rank;
+        public bool isRoom;
 
-        public int GetX => x;
-        public int GetY => y;
-
-        public SRoomPos(int _x, int _y)
+        public SRoomPos(int _x, int _y, int _rank, bool _isRoom)
         {
             x = _x;
             y = _y;
+            rank = _rank;
+            isRoom = _isRoom;
         }
     }
-
 
     public void GenerateMap()
     {
-        //Instantiate(mapPrefab, transform);
+        while (!SetRoomPosition())
+            ResetMap();
+
+        for (int i = 0; i < arrayLength; ++i)
+        {
+            for (int j = 0; j < arrayLength; ++j)
+            {
+                if (arrayRoom[i, j].Equals(0)) continue;
+
+                GameObject mapGo = Instantiate(mapPrefab, transform);
+
+                float xPos = (j - (arrayLength >> 1)) * paddingX;
+                float zPos = (i - (arrayLength >> 1)) * paddingZ;
+
+                mapGo.transform.position = new Vector3(xPos, 0f, zPos);
+                listRoomGo.Add(mapGo);
+            }
+        }
+
     }
 
-    private void SetRoomPosition()
+    public void ResetMap()
     {
+        foreach (GameObject go in listRoomGo)
+            Destroy(go);
+
+        System.Array.Clear(arrayRoom, 0, arrayRoom.Length);
+        listRoom.Clear();
+        listRoomGo.Clear();
+    }
+
+    private bool SetRoomPosition()
+    {
+        int ttlRoomCnt = 0;
+        int prevRoomCnt = 0;
+        int tempRoomCnt = 0;
+        int prevRank = 0;
+
         // 시작지점 초기화
-        arrayRoom[4, 4] = 1;
-        SRoomPos roomPos = new SRoomPos(4, 4);
-        listRoom0.Add(roomPos);
+        SRoomPos roomPos = new SRoomPos(arrayLength >> 1, arrayLength >> 1, 0, true);
+        arrayRoom[arrayLength >> 1, arrayLength >> 1] = 1;
+        listRoom.Add(roomPos);
+
+        ++ttlRoomCnt;
+
+        while (ttlRoomCnt < minRoomCnt)
+        {
+            if (prevRank > minRoomCnt && ttlRoomCnt < minRoomCnt)
+                return false;
+
+            tempRoomCnt = 0;
+            for (int i = prevRoomCnt; i < ttlRoomCnt; ++i)
+            {
+                if (MyMathf.CheckRange(listRoom[i].x, 1, arrayLength - 2) &&
+                    MyMathf.CheckRange(listRoom[i].y, 1, arrayLength - 2))
+                    tempRoomCnt += SetRoomPos(listRoom[i].x, listRoom[i].y, prevRank + 1);
+
+            }
+
+            prevRoomCnt = ttlRoomCnt;
+            ttlRoomCnt += tempRoomCnt;
+            ++prevRank;
+        }
+
+        return true;
 
         // 랭크 1에 해당하는 방을 생성한다.
-        List<SRoomPos> listEmptyRoom = new List<SRoomPos>();
-        listEmptyRoom = (GetEmptyRoomPos(listRoom0[0].x, listRoom0[0].y).ToList<SRoomPos>());
-        
+        // 2번째로 생기는 방은 반드시 2~4개의 방이 생성됨.
+
+
+        // 최대 뻗어나갈 수 있는 방의 랭크 개수를 가지고 계산하자.
+        // 만약 누군가가 4르 ㄹ입력한다면 배열은 4의 2배 + 3 크기로 만들자.( 좌 우 끝에 비우기 위함)
     }
 
-    private SRoomPos[] GetEmptyRoomPos(int _x, int _y)
+    private int SetRoomPos(int _x, int _y, int _rank)
     {
         List<SRoomPos> listRoomPos = new List<SRoomPos>();
         SRoomPos roomPos;
+        int roomCnt = Random.Range(1, 4);
+
         if (arrayRoom[_x, _y + 1].Equals(0))
         {
-            roomPos = new SRoomPos(_x, _y + 1);
+            roomPos = new SRoomPos(_x, _y + 1, _rank, true);
             listRoomPos.Add(roomPos);
         }
+        else
+            --roomCnt;
 
         if (arrayRoom[_x, _y - 1].Equals(0))
         {
-            roomPos = new SRoomPos(_x, _y - 1);
+            roomPos = new SRoomPos(_x, _y - 1, _rank, true);
             listRoomPos.Add(roomPos);
         }
+        else
+            --roomCnt;
 
         if (arrayRoom[_x + 1, _y].Equals(0))
         {
-            roomPos = new SRoomPos(_x + 1, _y);
+            roomPos = new SRoomPos(_x + 1, _y, _rank, true);
             listRoomPos.Add(roomPos);
         }
+        else
+            --roomCnt;
 
         if (arrayRoom[_x - 1, _y].Equals(0))
         {
-            roomPos = new SRoomPos(_x - 1, _y);
+            roomPos = new SRoomPos(_x - 1, _y, _rank, true);
             listRoomPos.Add(roomPos);
         }
-        return listRoomPos.ToArray();
+        else
+            --roomCnt;
+
+        while (listRoomPos.Count > roomCnt && listRoomPos.Count > 0)
+            listRoomPos.RemoveAt(Random.Range(0, listRoomPos.Count));
+
+        if (listRoomPos.Count > 0)
+        {
+            for (int i = 0; i < listRoomPos.Count; ++i)
+                arrayRoom[listRoomPos[i].x, listRoomPos[i].y] = 1;
+
+            listRoom.AddRange(listRoomPos.ToArray());
+        }
+        return listRoomPos.Count;
     }
 
-    private void Start()
+    private void Awake()
     {
-        // 배열을 0으로 초기화한다.
+        arrayLength = minRoomCnt;
+        arrayRoom = new int[arrayLength, arrayLength];
         System.Array.Clear(arrayRoom, 0, arrayRoom.Length);
+        listRoom = new List<SRoomPos>();
+        listRoomGo = new List<GameObject>();
     }
+
 
 
     [SerializeField]
     private GameObject mapPrefab = null;
+    [SerializeField]
+    private int minRoomCnt = 0;
+    [SerializeField]
+    private float paddingX = 0f;
+    [SerializeField]
+    private float paddingZ = 0f;
 
-    private int[,] arrayRoom = new int[10, 10];
+    private int arrayLength = 0;
 
-    private List<SRoomPos> listRoom0 = new List<SRoomPos>();
-    private List<SRoomPos> listRoom1 = new List<SRoomPos>();
-    private List<SRoomPos> listRoom2 = new List<SRoomPos>();
-    private List<SRoomPos> listRoom3 = new List<SRoomPos>();
+    private int[,] arrayRoom = null;
+
+    private List<SRoomPos> listRoom = null;
+    private List<GameObject> listRoomGo = null;
 }
