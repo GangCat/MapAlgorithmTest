@@ -378,7 +378,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &963194225
 GameObject:
@@ -457,12 +457,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.70710576, y: -0, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: 0, y: 300, z: 0}
+  m_LocalPosition: {x: 0, y: 150, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1027563846
 GameObject:
@@ -707,7 +707,7 @@ RectTransform:
   m_Children:
   - {fileID: 241491230}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -780,7 +780,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1217339753
 GameObject:
@@ -948,8 +948,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 340a32337bcb4d94bab4603f549c1274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapPrefab: {fileID: 8462242645336803140, guid: 4fdc32168152cf343ab288c0e5916863, type: 3}
-  minRoomCnt: 30
+  floorPrefabs:
+  - {fileID: 1102748429120874760, guid: b5faa7d8d456f4b41bd88cc5d794fced, type: 3}
+  - {fileID: 1102748429120874760, guid: 4fdc32168152cf343ab288c0e5916863, type: 3}
+  - {fileID: 1102748429120874760, guid: 735dbaeb0b272ca41ac46a6185dd8e81, type: 3}
+  - {fileID: 1102748429120874760, guid: aca0c95ee0f324747b294c51b491e4dd, type: 3}
+  wallPrefabs:
+  - {fileID: 8297717712924998493, guid: 70d301ee09cc8ce4b85b9112c2de8ffc, type: 3}
+  - {fileID: 4767983818013658929, guid: 9aa22106bbe15f147bae43ef50b2b44a, type: 3}
+  - {fileID: 2116180621801088822, guid: c5d5d53b9e2dc4c45b58104565e60968, type: 3}
+  - {fileID: 7386914517914614852, guid: ab7c3c326d1fa7d469a978d94523ef25, type: 3}
+  doorPrefabs:
+  - {fileID: 8095917875346556392, guid: c5ed0cfc9bde48c4fb138a68f6dc2ff2, type: 3}
+  - {fileID: 5055678666771158137, guid: 5e93fff2885745c4f9bf236001bd5dc4, type: 3}
+  - {fileID: 4243283022837740443, guid: 9cd8dc84901aaa040b2f536e37e4ce32, type: 3}
+  - {fileID: 6860658578260964756, guid: 7e1375e208950654e8c527eb6996cd70, type: 3}
+  minRoomCnt: 9
   paddingX: 15
   paddingZ: 15
 --- !u!1 &1847766065
@@ -1119,7 +1133,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

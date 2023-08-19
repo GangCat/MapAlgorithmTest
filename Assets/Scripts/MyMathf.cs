@@ -38,7 +38,7 @@ public class MyMathf : MonoBehaviour
 
     /// <summary>
     /// 설정 범위 내에 int값이 존재하는지 확인한다.
-    /// 이 때 최소와 최대 범위를 포함하여 타겟의 위치가 사이에 존재한다면 true를 반환해준다.
+    /// 최소 <= 타겟 < 최대
     /// </summary>
     /// <param name="_targetInt"></param>
     /// <param name="_minRange"></param>
@@ -54,7 +54,7 @@ public class MyMathf : MonoBehaviour
 
         if(_targetInt >= _minRange)
         {
-            if (_targetInt <= _maxRange)
+            if (_targetInt < _maxRange)
                 return true;
         }
         return false;
@@ -62,7 +62,7 @@ public class MyMathf : MonoBehaviour
 
     /// <summary>
     /// 설정 범위 내에 float값이 존재하는지 확인한다.
-    /// 이 때 최소와 최대 범위를 포함하여 타겟의 위치가 사이에 존재한다면 true를 반환해준다.
+    /// 최소 <= 타겟 <= 최대
     /// </summary>
     /// <param name="_targetFloat"></param>
     /// <param name="_minRange"></param>
